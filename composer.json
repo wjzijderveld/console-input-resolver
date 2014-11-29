@@ -1,0 +1,16 @@
+{
+    "require": {
+        "symfony/console": "~2.5"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "~2.1@dev"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        }
+    }
+}
