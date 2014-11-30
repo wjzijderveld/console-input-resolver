@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Wjzijderveld\Console\OptionResolver;
+namespace spec\Wjzijderveld\Console\InputResolver;
 
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
@@ -46,7 +46,7 @@ class ResolverSpec extends ObjectBehavior
     }
     public function it_is_initializable()
     {
-        $this->shouldHaveType('Wjzijderveld\Console\OptionResolver\Resolver');
+        $this->shouldHaveType('Wjzijderveld\Console\InputResolver\Resolver');
     }
 
     public function it_throws_an_exception_for_unknown_options()

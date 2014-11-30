@@ -1,6 +1,6 @@
 {
-    "name": "wjzijderveld/console-option-resolver",
-    "description": "Library to ask questions for missing options",
+    "name": "wjzijderveld/console-input-resolver",
+    "description": "Library to ask questions for missing options and arguments",
     "license": "MIT",
     "authors": [
         {

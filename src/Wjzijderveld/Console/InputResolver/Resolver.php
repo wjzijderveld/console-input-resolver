@@ -1,6 +1,6 @@
 <?php
 
-namespace Wjzijderveld\Console\OptionResolver;
+namespace Wjzijderveld\Console\InputResolver;
 
 use InvalidArgumentException;
 use Symfony\Component\Console\Helper\QuestionHelper;
