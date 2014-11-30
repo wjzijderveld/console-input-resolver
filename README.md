@@ -19,13 +19,13 @@ composer require wjzijderveld/console-input-resolver 1.*@dev
 ```php
 class GenerateCommand extends Command
 {
-    private $optionResolver;
+    private $inputResolver;
 
-    public function __construct(Resolver $optionResolver)
+    public function __construct(Resolver $inputResolver)
     {
         parent::__construct();
 
-        $this->optionResolver = $optionResolver;
+        $this->inputResolver = $inputResolver;
     }
 
     public function configure()
@@ -33,19 +33,31 @@ class GenerateCommand extends Command
         $this->setName('generate');
 
         $this
-            ->addOption('namespace', null, InputOption::VALUE_REQUIRED, 'The namespace to generate the class in')
-            ->addOption('class'. null, InputOption::VALUE_REQUIRED, 'THe name of the class to generate')
-            ->addOption('abstract', null, InputOption::VALUE_NONE, 'Make class abstract');
+            ->addArgument('class', InputArgument::OPTIONAL, 'The name of the class to generate')
+            ->addOption('namespace', null, InputOption::VALUE_REQUIRED, 'The namespace to generate the class in');
     }
 
     public function execut(InputInterface $input, OutputInterface $output)
     {
-        // options will now contain values for each given option
-        // for each option that is not given when running this command
-        // it will interactivily ask for a question
-        $options = $this->optionResolver->resolveInputDefinition($this->getDefinition(), array('namespace', 'class', 'abstract'));
+        // values will now contain values for namespace and class
+        // for each option or argument that is not given when running this command
+        // it will interactivily ask for a value
+        $values = $this->inputResolver->resolveInputDefinition($this->getDefinition(), array('namespace', 'class'));
 
-        var_dump($options);
+        var_dump($values);
     }
+}
+```
+
+Example output:
+
+```bash
+$ ./console generate --namespace Acme
+> The name of the class to generate: Foo
+> array(2) {
+  'namespace' =>
+  string(4) "Acme"
+  'class' =>
+  string(3) "Foo"
 }
 ```
