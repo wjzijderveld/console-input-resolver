@@ -1,6 +1,6 @@
 # Console options resolver
 
-[![Build Status](https://travis-ci.org/wjzijderveld/console-option-resolver.svg?branch=master)](https://travis-ci.org/wjzijderveld/console-option-resolver)
+[![Build Status](https://travis-ci.org/wjzijderveld/console-input-resolver.svg?branch=master)](https://travis-ci.org/wjzijderveld/console-input-resolver)
 
 A simple library for [Symfony Console].
 
@@ -11,7 +11,7 @@ It allows to ask the user for options if not provided, this way you can use a co
 ### Installation
 
 ```bash
-composer require wjzijderveld/console-option-resolver 1.*@dev
+composer require wjzijderveld/console-input-resolver 1.*@dev
 ```
 
 ### Usage
