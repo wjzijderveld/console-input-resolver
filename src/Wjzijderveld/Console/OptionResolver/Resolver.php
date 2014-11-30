@@ -4,6 +4,8 @@ namespace Wjzijderveld\Console\OptionResolver;
 
 use InvalidArgumentException;
 use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,11 +32,40 @@ class Resolver
         $value = $this->input->getOption($option->getName());
 
         if (null === $value) {
-            $question = $this->createQuestionForOption($option);
-            $value = $this->questionHelper->ask($this->input, $this->output, $question);
+            $value = $this->questionHelper->ask(
+                $this->input,
+                $this->output,
+                $this->createQuestionForOption($option)
+            );
         }
 
         return $value;
+    }
+
+    /**
+     * @return array Values for given InputDefinition, optionally filtered
+     */
+    public function resolveInputDefinition(InputDefinition $inputDefinition, array $filter = [])
+    {
+        $values    = [];
+
+        $arguments = array_filter($inputDefinition->getArguments(), function (InputArgument $argument) use ($filter) {
+            return ! count($filter) || in_array($argument->getName(), $filter);
+        });
+
+        $options = array_filter($inputDefinition->getOptions(), function (InputOption $option) use ($filter) {
+            return ! count($filter) || in_array($option->getName(), $filter);
+        });
+
+        foreach ($arguments as $argument) {
+            $values[$argument->getName()] = $this->input->getArgument($argument->getName());
+        }
+
+        foreach ($options as $option) {
+            $values[$option->getName()] = $this->getOptionValue($option);
+        }
+
+        return $values;
     }
 
     private function createQuestionForOption(InputOption $option)

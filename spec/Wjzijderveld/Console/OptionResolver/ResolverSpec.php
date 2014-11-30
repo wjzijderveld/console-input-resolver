@@ -7,6 +7,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,15 +19,24 @@ class ResolverSpec extends ObjectBehavior
     private $input;
     private $barOption;
     private $foobarOption;
+    private $inputDefinition;
 
     public function let(OutputInterface $output, QuestionHelper $questionHelper)
     {
         $this->barOption = new InputOption('bar', null, InputOption::VALUE_REQUIRED);
         $this->foobarOption = new InputOption('foobar', null, InputOption::VALUE_REQUIRED);
 
-        $inputDefinition = new InputDefinition(array($this->barOption, $this->foobarOption));
+        $this->inputDefinition = new InputDefinition(array(
+            $this->barOption,
+            $this->foobarOption,
+            new InputArgument('requiredArg', InputArgument::REQUIRED),
+            new InputArgument('optionalArg', InputArgument::OPTIONAL),
+        ));
 
-        $this->input = new ArrayInput(array('--bar' => 'baz'), $inputDefinition);
+        $this->input = new ArrayInput(
+            array('requiredArg' => 'requiredValue', 'optionalArg' => 'optionalValue', '--bar' => 'baz'),
+            $this->inputDefinition
+        );
 
         $this->beConstructedWith(
             $this->input,
@@ -58,5 +68,33 @@ class ResolverSpec extends ObjectBehavior
         $questionHelper->ask($this->input, $output, $question)->shouldBeCalled()->willReturn('foobaz');
 
         $this->getOptionValue($this->foobarOption)->shouldReturn('foobaz');
+    }
+
+    public function it_resolves_values_for_the_given_input_definition($output, $questionHelper)
+    {
+        $questionHelper
+            ->ask($this->input, $output, new Question($this->foobarOption->getDescription() . ': '))
+            ->shouldBeCalled()
+            ->willReturn('interactive answer');
+
+        $this->resolveInputDefinition($this->inputDefinition)->shouldReturn(array(
+            'requiredArg' => 'requiredValue',
+            'optionalArg' => 'optionalValue',
+            'bar'         => 'baz',
+            'foobar'      => 'interactive answer',
+        ));
+    }
+
+    public function it_resolved_values_for_given_input_definition_with_given_filter($output, $questionHelper)
+    {
+        $questionHelper
+            ->ask($this->input, $output, new Question($this->foobarOption->getDescription() . ': '))
+            ->shouldBeCalled()
+            ->willReturn('interactive answer');
+
+        $this->resolveInputDefinition($this->inputDefinition, array('bar', 'foobar'))->shouldReturn(array(
+            'bar'    => 'baz',
+            'foobar' => 'interactive answer',
+        ));
     }
 }
