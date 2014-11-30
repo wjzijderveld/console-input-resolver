@@ -11,7 +11,7 @@ It allows to ask the user for options if not provided, this way you can use a co
 ### Installation
 
 ```bash
-composer require wjzijderveld/console-option-resolver dev-master
+composer require wjzijderveld/console-option-resolver ~1.0@dev
 ```
 
 ### Usage
